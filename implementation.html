@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Project cs152 -- Implementation</title>
+<script type="text/x-mathjax-config">
+
+MathJax.Hub.Config({
+
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+
+});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet">
+<link href="http://getbootstrap.com/examples/blog/blog.css" rel="stylesheet">
+</head>
+<body>
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="main.html">Main</a>
+          <a class="blog-nav-item" href="motivation.html">Motivation</a>
+          <a class="blog-nav-item active" href="implementation.html">Implementation</a>
+          <a class="blog-nav-item" href="testing.html">Testing</a>
+          <a class="blog-nav-item" href="results.html">Results</a>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="blog-header">
+      </div>
+      <div class="row">
+        <div class="col-sm-11 blog-main">
+          <div class="blog-post">
+            <h2 class="blog-post-title">Implementation</h2>
+           <p>As the first step in our process we built a standard no-drop network capable to handing an arbitrary number of hidden layers, each with an arbitraty number of neurons. Further, the user is able from sigmoid and tanh as the non-linearity between layers and is also able to specify an output activation function separate from the activation used in the hidden layers.
+<p>A feature that allows a certain percentage of the input vector to be distorted/corrupted is in the works and we may settle on enabling Dropout/DropConnect on the input layer; <a href="http://arxiv.org/pdf/1207.0580.pdf">Hinton</a> et al. realized a significant 
+reduction in the number of classification errors their network made when using 50% dropout in the hidden layers and 20% in the input layer.
+<p> Our implementation follows closely from the algorithm presented by <a href = "http://jmlr.org/proceedings/papers/v28/wan13.pdf">Wan</a> et al. in the DropConnect paper as well as the accompanying <a href="http://cs.nyu.edu/~wanli/dropc/dropc_slides.pdf">slidedeck</a>
+and presentation. The feedforward steps proceeds as described, with a single training example $v_i$  applied to the masked version of the first weight matrix $(W\star M)v_i = v_{i+1}$. The result, $v_i$, is another column vector that serves as the input to the next layer.
+<p> We take a moment here to contemplate what exactly the resulting vector is. When we multiply a matrix by a column vector, what do we get? We get a linear combination of the columns, which are themselves the product of Bernoulli random variables. Below, we let $b_{ij}$
+denote a Bernoulli random variable in the masking matrix of an arbitrary hidden layer and $a_i$ denote the activation of the $i^\text{th}$ neuron in the previous layer. Computing the activations to pass on to the next layer in the network, we have:
+$$\begin{bmatrix} b_{11}&  b_{12} & \ldots & b_{1n}\\
+                  b_{21} & b_{22} & \ldots & b_{2n}\\
+                  \vdots & \vdots &\ddots & \vdots\\
+                  b_{m1} & b_{m2} & \ldots & b_{mn}\end{bmatrix}
+  \begin{bmatrix} a_1 \\ a_2 \\\vdots \\ a_n\end{bmatrix} =
+ a_1 \cdot  \begin{bmatrix} b_{11} \\ b_{21} \\ \vdots \\b_{m1}\end{bmatrix} +a_2\cdot \begin{bmatrix}b_{12} \\b_{22} \\ \vdots \\ b_{m2}\end{bmatrix}+ \cdots + a_n\cdot\begin{bmatrix}b_{1n} \\b_{2n} \\ \vdots \\ b_{mn}\end{bmatrix}
+= \begin{bmatrix} a_1b_{11} + a_2 {b_12} + \cdots + a_nn_{1n} \\
+  a_1b_{21} + a_2 {b_22} + \cdots + a_nn_{2n} \\
+ \vdots\\
+a_1b_{m1} + a_2 {b_m2} + \cdots + a_nn_{mn} \\
+\end{bmatrix}$$
+Hence, the activations in layer $i+1$ are linear combinations of Bernoulli random variables (note: this is before we pass them through our chosen non-linearity like the sigmoid or tanh function). We will see why this is important in the next section when we discuss 
+inference using DropConnect.
+<p>In the backpropigation step we again use the masks at each layer to ensure that only those units active in the forward pass have their weights updated, with a single exception: we use  momentum in our stochastic gradient descent method so rather than wipe out a neuron'\
+s momentum if it was not active in the forward pass, we ensure that the momentum is accounted for in the weight updates.
+<p> An issue arises in the implementation because if each of the $k$ hidden layers have an $m\times n$ weight matrix, then the memory complexity becomes $m\times n \times k$ for <i>each</i> training example. Fortunately, we have thus far not used enough hidden layers, neu\
+rons, or training samples for this to become an issue.
+<p> As one may expect, since the network is only trained on partial patterns, it takes longer for the weights to converge to a stable state. However, the additional time necessary for training was more than made up for in the DropConnect network's ability to generalize 
+as compared to Dropout and no-drop networks.
+<p> In the upcoming section, we discuss the details of inference with a DropConnect network and just how exactly it relates to model averaging. For now, the curious can look at the Matlab implementation housed <a href="http://www.cs.hmc.edu/~jderose/NN/">here</a>. The 
+feedforward step takes palce in nnff.m, the gradients are computed in nnbp.m, and applied in nnapplygrads.m.
+          </div><!-- /.blog-post -->
+          <ul class="pager">
+	    <li><a href="motivation.html">Previous</a></li>
+            <li><a href="testing.html">Next</a></li>
+          </ul>
+        </div><!-- /.blog-main -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    <div class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a></p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </div>
+  </body>
+</body>
+</html>
