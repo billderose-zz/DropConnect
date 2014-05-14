@@ -47,11 +47,11 @@ diagnoses.
 <p> The performance of the no-drop networks exhibits classic signs of overfitting, where the training error continues to decrease
 at the expense of generalization; the validation error ticks up as the network overfits.
 <center>
-<img src="overfit.jpg" alt="No-drop network performance: cancer data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/overfit.jpg" alt="No-drop network performance: cancer data" height="200" width="450"/>
 </center>
 <p> However just switching to the DropConnect algorithm gives the following results:
 <center>
-<img src="CancerDropConnect.jpg" alt="DropConnect network performance: cancer data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/CancerDropConnect.jpg" alt="DropConnect network performance: cancer data" height="200" width="450"/>
 </center>
 Although the validation set seems to jump around a lot initially, the results are very positive. Not only does the 
 validation set not experience a degredation in perfomance as time goes on, it actually out performs
@@ -61,11 +61,11 @@ testing performance.
 data. So well, in fact, that it's hard to even see the lines being plotting because we achieve zero errors
 on both sets very quickly:
 <center>
-<img src="NoDropSetosa.jpg" alt="No-drop network performance: iris setosa data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/NoDropSetosa.jpg" alt="No-drop network performance: iris setosa data" height="200" width="450"/>
 </center>
 The DropConnect network is, eventually, able to match the performance of the no drop network on the iris setosa data:
 <center>
-<img src="SetosaDropConnect.jpg" alt="No-drop network performance: iris setosa data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/SetosaDropConnect.jpg" alt="No-drop network performance: iris setosa data" height="200" width="450"/>
 </center>
 It takes longer, exactly as we would expect, for the DropConnect network to reach the level of performance
 of the no drop network but nonetheless it does. An interesting point is that the training performance of the 
@@ -78,7 +78,7 @@ data, which contains 683 measurements of cars from 1970-1982. In our tests, we r
 on acceleration, number of cylinders, engine displacement, and horsepower. Below, we see the results
 of using a no drop network:
 <center>
-<img src="NoDropCars.jpg" alt="No-drop network performance: carbig.mat data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/NoDropCars.jpg" alt="No-drop network performance: carbig.mat data" height="200" width="450"/>
 </center>
 Again, we see indications of overfitting as the validation error initially drops in step with the training error
 only to begin creeping back up for the rest of the training period. In certain cases, users of 
@@ -86,14 +86,14 @@ neural networks may stop early to prevent just this sort of overfitting. DropCon
 it entirely and the perscription is to stop stopping early and start using DropOut or DropConnect. However,
 in this case the DropConnect network fails to match the performance of the no drop net:
 <center>
-<img src="DropConnectCars.jpg" alt="DropConnect network performance: iris setosa data" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/DropConnectCars.jpg" alt="DropConnect network performance: iris setosa data" height="200" width="450"/>
 </center>
 This result is not a deal-breaker, though. 
 <p>In fact, even though in a few other cases, like when using around 400 hidden units,
 we noticed the training and validation error to decrease quickly at the start but then get stuck and remain constant
 for the entirety of the training:
 <center>
-<img src="flatline.jpg" height="200" width="450"/>
+<img src="http://www.cs.hmc.edu/~jderose/images/flatline.jpg" height="200" width="450"/>
 </center>
  We believe this is not a failure of the DropConnect algorithm but rather of our own poorly initialized weights. Both the "initialization and momentum are crucial" (<a href="http://www.cs.toronto.edu/~fritz/absps/momentum.pdf">Sutskever et al.</a>) to performance. More hidden units lead to more complex error surfaces that require better parameter selection to prevent convergence to local minima. Our use of stochastic gradient descent, as opposed to using conjugate-gradient descent or choosing a more intelligently momentum schedule, was relatively easy to implement but may also be holding us back from the true potential of the DropConnect network.
 <p> Further, it is entirely possible to train multiple DropConnect networks and use them all as an ensemble. This

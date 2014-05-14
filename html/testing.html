@@ -48,7 +48,7 @@ Thus revealing the mixture model interpretation of DropConnect. The output, or e
 <p> Things begin to get complicated here because if $M$ is the set of all possible masks, then there are $2^{|M|}$ possible networks (Do you see why? For each network, we can either use a mask or not). Thus, computing the expectation becomes infeasible due to the cardinality of the masking matrices is too great.
 <p>We are in luck, though, because we saw in the previous section that each neuron's activation is a linear combination of Bernoulli random variables. The Central Limit Theorem lets us approximate a Binomial$(n,p)$ distribution with a $\mathcal{N}(np, np(1-p))$, so that instead of averaging over all possible networks, we compute the layer response as test time by <a href="http://cs.nyu.edu/~wanli/dropc/dropc_slides.pdf">sampling</a> or numeric integration. Further, we can sample each response independently so that the task is easily parallelizable and much more effecient.
 <center>
-<img src="norm.jpg" >
+<img src="http://www.cs.hmc.edu/~jderose/images/norm.jpg" >
           </div><!-- /.blog-post -->
           <ul class="pager">
 	    <li><a href="testing.html">Previous</a></li>
